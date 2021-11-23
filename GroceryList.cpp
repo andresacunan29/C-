@@ -1,132 +1,144 @@
+/***********************************************************
+ *    FILE: GroceryList.cpp                                *
+ *  AUTHOR: Andres Acuna                                   *
+ *    DATE: 11/2021                                        *
+ * PURPOSE:   CSC24400 project 3                           *
+ ***********************************************************/
+
 #include "GroceryList.hpp"
-#include <iostream>
-#include <string>
 
-GroceryList::GroceryList()
-    : _capacity(INITIAL_CAPACITY), _count(0), _grocery_items(nullptr) {
-    _grocery_items = new GroceryItem[_capacity];
+//default (no argument) constructor no actual GroceryItems
+GroceryList::GroceryList() 
+    : m_head(nullptr), m_count(0) {
 }
 
+// takes no arguments and returns an integer, current number of GroceryItems
 int GroceryList::getLength() const {
-    return _count;
+    return m_count;
 }
 
-int GroceryList::numEmptySlots() const {
-    return _capacity - _count;
-}
-
+//contains an exact duplicate of each GroceryItem in the right hand side GroceryList.
 GroceryList& GroceryList::operator=(const GroceryList& other) {
     if (this == &other) {
         return *this;
     }
 
-    delete[] _grocery_items;
-
-    _capacity = other._capacity;
-    _count = other._count;
-    _grocery_items = new GroceryItem[_capacity];
-    
-    for (int i = 0; i < _count; i++) {
-        _grocery_items[i] = other._grocery_items[i];
-    }
+    clear();
+    copy(m_head, other.m_head);
+    m_count = other.m_count;
 
     return *this;
 }
 
+void GroceryList::copy(ListNode*& dest, ListNode* src)
+{
+	if (!src) {
+        return;
+    }
+	dest = new ListNode(src->groceryItem);
+	copy(dest->next, src->next);
+}
+
+void GroceryList::clear() {
+    ListNode* current = m_head;
+    while (current) {
+        ListNode* remaining = current->next;
+        delete current;
+        current = remaining;
+    }
+    m_head = nullptr;
+    m_count = 0;
+}
+
+// when the grocery item already exists it is updated to be the sum of the two associated quantities.
 GroceryList GroceryList::operator+=(const GroceryItem& item) {
-    int index = -1;
-    for (int i = 0; i < _count; i++) {
-        if (_grocery_items[i].name() == item.name()) {
-            index = i;
-            break;
+    ListNode* previous = nullptr;
+    for (ListNode* current = m_head; current != nullptr; current = current->next) {
+        if (current->groceryItem.name() == item.name()) {
+            current->groceryItem.quantity() += item.quantity();
+            return *this;
         }
+        previous = current;
     }
 
-    if (index == -1) {
-        if (_count >= _capacity) {
-            _capacity *= 2; // double the capacity
-            GroceryItem* temp = new GroceryItem[_capacity];
-            for (int i = 0; i < _count; i++) {
-                temp[i] = _grocery_items[i];
-            }
-            delete[] _grocery_items;
-            _grocery_items = temp;
-        }
-        _grocery_items[_count++] = item;
+    // if previous is nullptr it means 'this' list was empty.
+    // else previous points to the last node of the list.
+    
+    ListNode* new_node = new ListNode(item);
+    if (previous) {
+        previous->next = new_node;
     } else {
-        _grocery_items[index].quantity() = _grocery_items[index].quantity() + item.quantity();
+        m_head = new_node;
     }
+    m_count++;
 
     return *this;
 }
+
 
 GroceryList GroceryList::operator+=(const GroceryList& other) {
-    for (int i = 0; i < other._count; i++) {
-        (*this) += other._grocery_items[i];
+    for (ListNode* current = other.m_head; current != nullptr; current = current->next) {
+        (*this) += current->groceryItem;
     }
     return *this;
 }
 
-GroceryList GroceryList::operator-=(const std::string& itemName) {
-    int index = -1;
-    for (int i = 0; i < _count; i++) {
-        if (_grocery_items[i].name() == itemName) {
-            index = i;
-            break;
-        }
-    }
 
-    if (index != -1) {
-        for (int i = index; i < _count - 1; i++) {
-            _grocery_items[i] = _grocery_items[i + 1];
+//when the right hand side is a string 
+GroceryList GroceryList::operator-=(const std::string& item_name) {
+    ListNode* temp = m_head;
+    ListNode* prev = nullptr;
+
+    //an item is found in the GroceryList, then that item 
+    //should be removed from the GroceryList.
+
+    if (temp != nullptr && temp->groceryItem.name() == item_name) {
+        m_head = temp->next;
+        delete temp;
+        return *this;
+    } else {
+        while (temp != nullptr && temp->groceryItem.name() != item_name) {
+            prev = temp;
+            temp = temp->next;
         }
-        _count--;
+        if (temp == nullptr) {
+            return *this;
+        }
+        prev->next = temp->next;
+        delete temp;
     }
 
     return *this;
 }
 
-GroceryItem* GroceryList::operator[](const std::string& itemName) const {
-    int index = -1;
-    for (int i = 0; i < _count; i++) {
-        if (_grocery_items[i].name() == itemName) {
-            index = i;
-            break;
+//return a pointer to the corresponding GroceryItem if it is found in GroceryList
+GroceryItem* GroceryList::operator[](const std::string& item_name) const {
+    for (ListNode* current = m_head; current != nullptr; current = current->next) {
+        if (current->groceryItem.name() == item_name) {
+            return &current->groceryItem;
         }
-    }
-
-    if (index != -1) {
-        return (GroceryItem*)(_grocery_items + index);
-    }
+    }//NULL otherwise
     return nullptr;
 }
 
-void GroceryList::checkOff(const std::string& itemName) {
-    int index = -1;
-    for (int i = 0; i < _count; i++) {
-        if (_grocery_items[i].name() == itemName) {
-            index = i;
-            break;
+//single string parameter representing the name of a GroceryItem to mark as purchased
+void GroceryList::checkOff(const std::string& item_name) {
+    for (ListNode* current = m_head; current != nullptr; current = current->next) {
+        if (current->groceryItem.name() == item_name) {
+            current->groceryItem.bought() = true;
+            return;
         }
     }
+}
 
-    if (index != -1) {
-        _grocery_items[index].bought() = true;
+void GroceryList::print(std::ostream& ostr) const {
+    for (ListNode* current = m_head; current != nullptr; current = current->next) {
+        ostr << current->groceryItem << std::endl;
     }
 }
 
-std::ostream& operator<<(std::ostream& ostr, const GroceryList& gl) {
-    for (int i = 0; i < gl._count; i++) {
-        ostr << gl._grocery_items[i] << std::endl;
-    }
+//to output to a stream, the order the GroceryItems are listed is not important
+std::ostream& operator<<(std::ostream& ostr, const GroceryList& groceryList) {
+    groceryList.print(ostr);
     return ostr;
-}
-
-GroceryList::GroceryList(const GroceryList& other) {
-    _grocery_items = nullptr;
-    (*this) = other;
-}
-
-GroceryList::~GroceryList() {
-    delete[] _grocery_items;
 }

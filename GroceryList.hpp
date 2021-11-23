@@ -1,38 +1,49 @@
 /***********************************************************
  *    FILE: GroceryList.hpp                                *
- *  AUTHOR: Andres Acuna                                                      *
- *    DATE: 10/2021                                         *
- *                                                         *
+ *  AUTHOR: Andres Acuna                                   *
+ *    DATE: 11/2021                                        *
+ * PURPOSE:   CSC24400 project 3                           *
  ***********************************************************/
-#ifndef _GROCERY_LIST_HPP
-#define _GROCERY_LIST_HPP
+#ifndef GROCERY_LIST_HPP
+#define GROCERY_LIST_HPP
 
-#include <iostream>
 #include <string>
 #include "GroceryItem.hpp"
 
-class GroceryList {
-private:
-    static const int INITIAL_CAPACITY { 5 };
-    int _capacity;
-    int _count;
-    GroceryItem* _grocery_items;
+class ListNode {
+public:
+    ListNode(const GroceryItem& item)
+        : groceryItem(item), next(nullptr) {}
 
+    GroceryItem groceryItem;
+    ListNode* next;
+};
+
+
+class GroceryList {
 public:
     GroceryList();
     int getLength() const;
-    int numEmptySlots() const;
+
+    // all the overloading in other class, not in ListNode
     GroceryList& operator=(const GroceryList& other);
     GroceryList operator+=(const GroceryItem& item);
     GroceryList operator+=(const GroceryList& other);
-    GroceryList operator-=(const std::string& itemName);
-    GroceryItem* operator[](const std::string& itemName) const;
-    void checkOff(const std::string& itemName);
+    GroceryList operator-=(const std::string& item_name);
+    GroceryItem* operator[](const std::string& item_name) const;
+    void checkOff(const std::string& item_name);
+    void print(std::ostream& ostr) const;
+    
+private:
+    void clear();
+    void copy(ListNode*& dest, ListNode* src);
 
-    GroceryList(const GroceryList& other);
-    ~GroceryList();
-
-    friend std::ostream& operator<<(std::ostream& ostr, const GroceryList& gl);
+private:
+    ListNode* m_head;
+    int m_count;
 };
+
+
+std::ostream& operator<<(std::ostream& ostr, const GroceryList& groceryList);
 
 #endif
