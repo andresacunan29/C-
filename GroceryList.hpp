@@ -1,9 +1,3 @@
-/***********************************************************
- *    FILE: GroceryList.hpp                                *
- *  AUTHOR: Andres Acuna                                   *
- *    DATE: 11/2021                                        *
- * PURPOSE:   CSC24400 project 3                           *
- ***********************************************************/
 #ifndef GROCERY_LIST_HPP
 #define GROCERY_LIST_HPP
 
