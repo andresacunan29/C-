@@ -1,10 +1,4 @@
-/***********************************************************
- *    FILE: GroceryItem.hpp                                *
- *  AUTHOR:                                                *
- *    DATE: 10/2021                                         *
- * PURPOSE: Class definition for GroceryItem, as needed in * 
- *            CSC24400 project 2                           * 
- ***********************************************************/
+
 #ifndef _GROCERY_ITEM_HPP_
 #define _GROCERY_ITEM_HPP_
 
