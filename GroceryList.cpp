@@ -1,5 +1,3 @@
-
-
 #include "GroceryList.hpp"
 
 //default (no argument) constructor no actual GroceryItems
