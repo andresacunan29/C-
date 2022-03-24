@@ -1,9 +1,4 @@
-/***********************************************************
- *    FILE: GroceryList.cpp                                *
- *  AUTHOR: Andres Acuna                                   *
- *    DATE: 11/2021                                        *
- * PURPOSE:   CSC24400 project 3                           *
- ***********************************************************/
+
 
 #include "GroceryList.hpp"
 
