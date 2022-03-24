@@ -1,4 +1,3 @@
-
 #include "GroceryItem.hpp"
 
 using namespace std;
