@@ -1,10 +1,4 @@
-/***********************************************************
- *    FILE: GroceryItem.cpp                                *
- *  AUTHOR: Andres Acuna                                              *
- *    DATE: 10/2021                                         *
- * PURPOSE: Class implementation for GroceryItem, as       *
- *            needed in CSC24400 project 2                 * 
- ***********************************************************/
+
 #include "GroceryItem.hpp"
 
 using namespace std;
