@@ -1,42 +1,31 @@
-#ifndef GROCERY_LIST_HPP
-#define GROCERY_LIST_HPP
+#ifndef GROCERY_LIST_H
+#define GROCERY_LIST_H
 
-#include <string>
 #include "GroceryItem.hpp"
 
-class ListNode {
-public:
-    ListNode(const GroceryItem& item)
-        : groceryItem(item), next(nullptr) {}
-
-    GroceryItem groceryItem;
-    ListNode* next;
+// Representation of a binary search tree node.
+struct Node {
+    GroceryItem data;
+    Node* left;
+    Node* right;
 };
-
 
 class GroceryList {
 public:
     GroceryList();
     int getLength() const;
-
-    // all the overloading in other class, not in ListNode
     GroceryList& operator=(const GroceryList& other);
     GroceryList operator+=(const GroceryItem& item);
     GroceryList operator+=(const GroceryList& other);
-    GroceryList operator-=(const std::string& item_name);
-    GroceryItem* operator[](const std::string& item_name) const;
-    void checkOff(const std::string& item_name);
-    void print(std::ostream& ostr) const;
-    
-private:
-    void clear();
-    void copy(ListNode*& dest, ListNode* src);
+    GroceryList operator-=(const std::string& itemName);
+    GroceryItem* operator[](const std::string& itemName) const;
+    void checkOff(const std::string& itemName);
 
+    friend std::ostream& operator<<(std::ostream& ostr, const GroceryList& groceryList);
 private:
-    ListNode* m_head;
-    int m_count;
+    Node* m_root;   // pointer to the root node.
+    int m_count;    // total number of nodes in the binary search tree.
 };
-
 
 std::ostream& operator<<(std::ostream& ostr, const GroceryList& groceryList);
 
