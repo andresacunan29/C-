@@ -1,3 +1,9 @@
+/*********************************************************
+ *  Solution to CSC24400 Fall 2021 Project #1           *
+ *    Author: A. Acuna                                  *
+ *      Date: 09/2021                                    *
+ *********************************************************/
+
 #include<iostream>
 #include<fstream>
 #include<string>
